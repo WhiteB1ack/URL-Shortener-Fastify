@@ -52,6 +52,11 @@ export const CreateUrlStatsResponseSchema = Type.Object({
   createdAt: CreateAtSchema
 })
 
+// 6. 获取所有
+export const GetAllUrlStatsResponseSchema = Type.Object({
+  list: Type.Array(CreateUrlStatsResponseSchema)
+})
+
 // 4. 通用错误响应(配合 @fastify/sensible 的 404/400 等响应序列化)
 export const ErrorResponseSchema = Type.Object({
   statusCode: Type.Number(),

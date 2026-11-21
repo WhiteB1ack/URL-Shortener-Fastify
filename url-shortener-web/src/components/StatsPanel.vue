@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router';
 import { getShortUrl } from '../api/shortener';
 import type { CreateUrlStatsResponse } from '../types/shortener';
-const costmeCode = ref<string>('')
+
+const route = useRoute()
+const costmeCode = route.params.code as string
 
 const isShow = ref(false)
 const urlDetail = ref<CreateUrlStatsResponse | null>(null);
@@ -11,9 +14,8 @@ const handleGetShorturl = async() => {
   // 提交数据
 
   // 检测数据内容是否合规
-
   try {
-    const res = await getShortUrl(costmeCode.value)
+    const res = await getShortUrl(costmeCode)
     console.log(res)
     isShow.value = true
     urlDetail.value = res.data
@@ -21,16 +23,13 @@ const handleGetShorturl = async() => {
     console.log('查询失败', err)
   }
 }
+
+onMounted(() => {
+  handleGetShorturl()
+})
 </script>
 
 <template>
-  <h3>短链查询板</h3>
-  <div>
-    <span>
-      查询短码: <input type="text", v-model="costmeCode" /><br>
-      <button @click="handleGetShorturl">提交</button>
-    </span>
-  </div>
   <h3>结果面板</h3>
   <div>
     <span v-if="isShow">

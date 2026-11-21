@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { createShortUrl } from '../api/shortener';
-
+import type { CreateShortUrlResponse } from '../types/shortener';
 const longUrl = ref<string>('');
 const custmeCode = ref<string>('');
+
+const isShow = ref(false)
+const shortCodeMessage = ref<CreateShortUrlResponse | null>(null)
 
 const handleCreateShorturl = async () => {
   const url = longUrl.value.trim();
@@ -20,7 +23,8 @@ const handleCreateShorturl = async () => {
         
     const res = await createShortUrl(data)
     console.log('创建成功', res)
-
+    isShow.value = true
+    shortCodeMessage.value = res.data
     // 成功将数据储存在本地存储中
   } catch (err) {
     console.log('创建失败', err)
@@ -39,6 +43,14 @@ const handleCreateShorturl = async () => {
     </span>
   </div>
 
+  <div v-if="isShow">
+    <h3>响应数据</h3>
+    <h5>code: {{ shortCodeMessage!.code }}</h5>
+    <h5>shortUrl: <a :href="shortCodeMessage!.shortUrl">{{ shortCodeMessage!.shortUrl }}</a></h5>
+    <h5></h5> 
+  </div>
+  <br><br><br><br><br>
+  <a href="/list">list</a>
 </template>
 
 

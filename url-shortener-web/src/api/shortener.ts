@@ -1,5 +1,5 @@
 import request from "./request";
-import type { CreateShortUrlBody, CreateShortUrlResponse, CreateUrlStatsResponse } from "../types/shortener";
+import type { CreateShortUrlBody, CreateShortUrlResponse, CreateUrlStatsResponse, GetAllUrlStatsResponseSchema } from "../types/shortener";
 
 // 接口1: /shorten post
 export const createShortUrl = ( data: CreateShortUrlBody ) => {
@@ -19,4 +19,8 @@ export const getShortUrl = ( code: string ) => {
 // 接口4: /ping
 export const getPing = () => {
   return request.get<string>('/ping')
+}
+
+export const getAllShortUrlList = () => {
+  return request.get<GetAllUrlStatsResponseSchema>('/stats')
 }

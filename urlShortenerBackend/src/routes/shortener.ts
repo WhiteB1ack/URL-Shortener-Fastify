@@ -1,6 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { nanoid } from 'nanoid'
-import { CreateShortUrlBodySchema, CreateShortUrlResponseSchema, RedirectParamsSchema, ErrorResponseSchema, CreateUrlStatsResponseSchema, StatsParamsSchema } from '../schemas/shortener.schema.js'
+import { CreateShortUrlBodySchema, CreateShortUrlResponseSchema, RedirectParamsSchema, ErrorResponseSchema, CreateUrlStatsResponseSchema, StatsParamsSchema, GetAllUrlStatsResponseSchema } from '../schemas/shortener.schema.js'
+import { request } from 'node:http'
 
 export const shortenerRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   // 接口 1: 生成短链接
@@ -124,4 +125,26 @@ export const shortenerRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   fastify.get('/ping', async () => {
     return { message: 'pong' }
   })
+
+  // 接口 5: 获取所有数据
+  fastify.get(
+    '/stats',
+    {
+      schema: {
+        response: {
+          200: GetAllUrlStatsResponseSchema,
+          404: ErrorResponseSchema
+        }
+      }
+    },
+    async ( request, reply ) => {
+      const recordList = await fastify.prisma.shortUrl.findMany()
+
+      if(!recordList) {
+        return reply.notFound('不存在任何短链')
+      }
+
+      return reply.code(200).send({ list: recordList })
+    }
+  )
 }

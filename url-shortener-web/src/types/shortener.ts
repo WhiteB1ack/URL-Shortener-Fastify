@@ -21,3 +21,7 @@ export interface CreateUrlStatsResponse {
   clicks: number,
   createdAt: Date
 }
+
+export interface GetAllUrlStatsResponseSchema {
+  list: Array<CreateUrlStatsResponse>
+}
